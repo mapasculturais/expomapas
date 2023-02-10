@@ -1,5 +1,5 @@
 # Expomapas
-O ExpoMapas é um projeto desenvolvido com recursos da Temporada de Artes Cearenses (TAC) pelo bolsista Ismael Almeida Fragoso, do curso de Design Digital, da Universidade Federal do Ceara, sob a orientação de João Vilnei de Oiveira Júnior e de André Quintino Lopes. O objetivo do projeto é criar exposições digitais de agentes com dados obtidos a partir do banco de dados do Mapa Cultural do Ceará. Estas exposições têm como objetivo dar mais visibilidade ao acervo disponível em cada perfil do site e deixar este conteúdo mais acessível a população.
+O ExpoMapas é um projeto desenvolvido por Ismael Almeida Fragoso, do curso de Design Digital, da Universidade Federal do Ceara, sob a orientação de João Vilnei de Oiveira Júnior e de André Quintino Lopes. O objetivo do projeto é criar exposições digitais de agentes com dados obtidos a partir do banco de dados do Mapa Cultural do Ceará. Estas exposições têm como objetivo dar mais visibilidade ao acervo disponível em cada perfil do site e deixar este conteúdo mais acessível a população.
 
 A seguir, apresentamos as características que consideramos principais:
 - FÁCIL ACESSO AO ACERVO – os acervos de cada perfil são expostos de maneira dinâmica ao usuário que acessa o site.
