@@ -173,7 +173,7 @@ console.log(tag);
 function clicar() {
     for (let i = 0; i < tag.length; i++) {
         if (tag[i].addEventListener('click', function() {
-                window.location = './home.html?area=' + tag[i].innerHTML;
+                window.location = './home.html?area=' + tag[i].innerHTML + '&local=';
                 console.log(tag[i].innerHTML);
             })) {}
 

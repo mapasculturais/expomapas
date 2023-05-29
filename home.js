@@ -73,6 +73,9 @@ function shuffleArray(arr) {
 //     function(response) { console.log(response[0]['@files:avatar'].url); });
 
 function refresh(area) {
+    console.log(area[1]);
+    var a = document.getElementById('area');
+    a.value = area[1];
     var page = parseInt(Math.random() * (250 - 1));
     if (area[0] == "area") {
         $.getJSON(
@@ -81,15 +84,17 @@ function refresh(area) {
                 '@files': '(avatar, gallery):url',
                 '@limit': 10,
                 '@page': page,
-                'term:area': 'LIKE(' + tag + ')'
+                'term:area': 'LIKE(' + area[1] + ')'
             },
             function(response) {
+                var a = document.getElementById('area');
+                a.value = area[1];
                 render(response);
             });
     }
     if (area[0] == "name") {
         var nome = area[1].replace("+", " ");
-        console.log(nome);
+        // console.log(nome);
         $.getJSON(
             'https://mapacultural.secult.ce.gov.br/api/agent/find', {
                 '@select': 'id, name, shortDescription, endereco, location',
@@ -100,6 +105,8 @@ function refresh(area) {
                 'endereco': 'ILIKE(%' + area[3] + '%)'
             },
             function(response) {
+                var a = document.getElementById('area');
+                a.value = area[1];
                 render(response);
             });
 
@@ -141,6 +148,7 @@ function render(response) {
                             </div>
                         </div>
                     </div>`;
+
                 console.log(element['@files:avatar'].url);
                 console.log(element['@files:gallery']);
             } else {
@@ -151,6 +159,7 @@ function render(response) {
             console.log('não tem');
         }
     })
+
     body.innerHTML += cont;
     var contCard = document.querySelectorAll('.container-card');
     contCard.forEach(async(card) => {
@@ -169,16 +178,13 @@ const queryString = window.location.search;
 var tag = (queryString.split(/[\&=]+/));
 
 tag[0] = tag[0].replace('?', '');
-tag[0] = tag[0].replace('l', '');
+// tag[0] = tag[0].replace('l', '');
 tag[3] = tag[3].replace('+', ' ');
 tag[3] = tag[3].replace('+', ' ');
 var tags = [];
 tag.forEach(function(element) {
     tags.push(decodeURIComponent(element))
 })
-var local = document.querySelector("#local");
-console.log(local);
-var area = document.querySelector("#area");
-area.value = 'arte';
+console.log(tags);
 
 refresh(tags);
