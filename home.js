@@ -1,58 +1,58 @@
 // import ColorThief from './color-thief-2.3.2/dist/color-thief.mjs'
 
 // get all card elements.
-const cards = document.querySelectorAll(".card");
+// const cards = document.querySelectorAll(".card");
 
-// create colorthief instance
-const colorThief = new ColorThief();
+// // create colorthief instance
+// const colorThief = new ColorThief();
 
-cards.forEach(async(card) => {
-    const image = card.children[0];
-    const text = card.children[1];
+// cards.forEach(async(card) => {
+//     const image = card.children[0];
+//     const text = card.children[1];
 
-    // get palette color from image
-    const palette = await extractColor(image);
+//     // get palette color from image
+//     const palette = await extractColor(image);
 
-    const primary = palette[0].join(",");
-    const secondary = palette[1].join(",");
+//     const primary = palette[0].join(",");
+//     const secondary = palette[1].join(",");
 
-    // change color
-    card.style.background = `rgb(${primary})`;
-    text.style.color = `rgb(${secondary})`;
-});
+//     // change color
+//     card.style.background = `rgb(${primary})`;
+//     text.style.color = `rgb(${secondary})`;
+// });
 
-// async function wrapper
-function extractColor(image) {
-    // image.crossOrigin = 'Anonymous';
-    return new Promise((resolve) => {
-        const getPalette = () => {
-            return colorThief.getPalette(image, 4);
-        };
+// // async function wrapper
+// function extractColor(image) {
+//     // image.crossOrigin = 'Anonymous';
+//     return new Promise((resolve) => {
+//         const getPalette = () => {
+//             return colorThief.getPalette(image, 4);
+//         };
 
-        // as said in the colorthief documentation, 
-        // we have to wait until the image is fully loaded.
+//         // as said in the colorthief documentation, 
+//         // we have to wait until the image is fully loaded.
 
-        if (image.complete) {
-            return resolve(getPalette());
-        }
+//         if (image.complete) {
+//             return resolve(getPalette());
+//         }
 
-        image.onload = () => {
-            resolve(getPalette());
-        };
-    });
-}
+//         image.onload = () => {
+//             resolve(getPalette());
+//         };
+//     });
+// }
 
-var contCard = document.querySelectorAll('.container-card');
+// var contCard = document.querySelectorAll('.container-card');
 
-contCard.forEach(async(card) => {
-    var num = Math.floor(Math.random() * (60 - 30)) + 30;
-    var num2 = 100 - num;
-    var nums = [num, num2];
-    var nums2 = shuffleArray(nums);
+// contCard.forEach(async(card) => {
+//     var num = Math.floor(Math.random() * (60 - 30)) + 30;
+//     var num2 = 100 - num;
+//     var nums = [num, num2];
+//     var nums2 = shuffleArray(nums);
 
-    card.children[0].style.height = nums2[1] + '%';
-    card.children[1].style.height = nums2[0] + '%';
-})
+//     card.children[0].style.height = nums2[1] + '%';
+//     card.children[1].style.height = nums2[0] + '%';
+// })
 
 function shuffleArray(arr) {
     // Loop em todos os elementos
@@ -74,35 +74,65 @@ function shuffleArray(arr) {
 
 function refresh(area) {
     var page = parseInt(Math.random() * (250 - 1));
+    var tag = (decodeURIComponent(area[1]));
 
-    console.log(page);
-    $.getJSON(
-        'https://mapacultural.secult.ce.gov.br/api/agent/find', {
-            '@select': 'id, name, shortDescription, endereco',
-            '@files': '(avatar, gallery):url',
-            '@limit': 10,
-            '@page': page,
-            'term:area': 'LIKE(' + area + ')'
-        },
-        function(response) {
-            console.log(response);
-            var cont = `<img class="logo" src="./assets/Logo_01.png" alt="">
+    if (area[0] == "area") {
+        $.getJSON(
+            'https://mapacultural.secult.ce.gov.br/api/agent/find', {
+                '@select': 'id, name, shortDescription, endereco, location',
+                '@files': '(avatar, gallery):url',
+                '@limit': 10,
+                '@page': page,
+                'term:area': 'LIKE(' + tag + ')'
+            },
+            function(response) {
+                render(response);
+            });
+    }
+    if (area[0] == "name") {
+        var nome = area[1].replace("+", " ");
+        console.log(nome);
+        $.getJSON(
+            'https://mapacultural.secult.ce.gov.br/api/agent/find', {
+                '@select': 'id, name, shortDescription, endereco, location',
+                '@files': '(avatar, gallery):url',
+                '@limit': 10,
+                'term:tag': 'LIKE(%' + nome + '%)',
+                'shortDescription': 'ILIKE(%' + area[3] + '%)'
+            },
+            function(response) {
+                render(response);
+            });
+
+    }
+
+}
+
+function render(response) {
+    console.log(response);
+    var cont = `<img class="logo" src="./assets/Logo_01.png" alt="">
+            <form action="./home.html">
             <label for="area">
-            <input type="text" id="area" name="lname">
-            <div class="submit"></div>
-        </label>`;
-            var body = document.querySelector('body');
+            <input type="text" id="area" name="name">
+            <input type="submit" class="submit" value="">
+        </label>
+        <label for="local">
+            <input type="text" id="local" name="local">
+            <input type="submit" class="submit" value="">
+        </label> </form>`;
+    var body = document.querySelector('body');
 
-            response.forEach(function(element) {
-                if (element.hasOwnProperty('@files:avatar') && element.hasOwnProperty('@files:avatar')) {
-                    if (Array.isArray(element['@files:gallery']) == true && element['@files:gallery'].length > 5) {
-                        cont += `<div class="container">
+    response.forEach(function(element) {
+        if (element.hasOwnProperty('@files:avatar') && element.hasOwnProperty('@files:avatar')) {
+            if (Array.isArray(element['@files:gallery']) == true && element['@files:gallery'].length > 5) {
+                cont += `<div class="container">
                         <div class="card-profile">
                             <div class="card">
                                 <img class="card-image" src="${element['@files:avatar'].url}">
                                 <div class="card-text">
                                     <span>${element.name}</span>
                                     <span>${element.shortDescription}</span>
+                                    <a href="https://mapacultural.secult.ce.gov.br/agente/${element.id}/" target="_blank">SAIBA MAIS</a>
                                 </div>
                             </div>
                         </div>
@@ -121,70 +151,34 @@ function refresh(area) {
                             </div>
                         </div>
                     </div>`;
-                        console.log(element['@files:avatar'].url);
-                        console.log(element['@files:gallery']);
-                    } else {
-                        console.log('nao tem msm');
-                    }
+                console.log(element['@files:avatar'].url);
+                console.log(element['@files:gallery']);
+            } else {
+                console.log('nao tem msm');
+            }
 
-                } else {
-                    console.log('não tem');
-                }
-            })
-            body.innerHTML = cont;
-            var contCard = document.querySelectorAll('.container-card');
-            contCard.forEach(async(card) => {
-                var num = Math.floor(Math.random() * (60 - 30)) + 30;
-                var num2 = 100 - num;
-                var nums = [num, num2];
-                var nums2 = shuffleArray(nums);
+        } else {
+            console.log('não tem');
+        }
+    })
+    body.innerHTML = cont;
+    var contCard = document.querySelectorAll('.container-card');
+    contCard.forEach(async(card) => {
+        var num = Math.floor(Math.random() * (60 - 30)) + 30;
+        var num2 = 100 - num;
+        var nums = [num, num2];
+        var nums2 = shuffleArray(nums);
 
-                card.children[0].style.height = nums2[1] + '%';
-                card.children[1].style.height = nums2[0] + '%';
-            })
+        card.children[0].style.height = nums2[1] + '%';
+        card.children[1].style.height = nums2[0] + '%';
+    })
 
-
-            // response.forEach(function(element) {
-            //         for (var i = 0; i < element['@files:gallery'].length; i++) {
-
-            //             let container = document.querySelectorAll(".container");
-            //             let img = container.querySelectorAll(":scope > .card-gallery");
-            //             console.log(img);
-
-            //             // img[i].style.backgroundImage = 'url(' + element['@files:gallery'][i].url + ')';
-            //         }
-            //     })
-            // response.forEach(function(element) {
-            //     var body = document.querySelector('body');
-            //     console.log(element['@files.avatar'].url);
-            //         body.innerHTML = `<div class="container">
-            //         <div class="card-profile">
-            //             <div class="card">
-            //                 <img class="card-image" src="${element['@files.avatar'].url}">
-            //                 <div class="card-text">
-            //                     <span>${element.name}</span>
-            //                     <span>${element.name}</span>
-            //                 </div>
-            //             </div>
-            //         </div>
-            //         <div class="container-column">
-            //             <div class="container-card">
-            //                 <div class="card-gallery"></div>
-            //                 <div class="card-gallery"></div>
-            //             </div>
-            //             <div class="container-card">
-            //                 <div class="card-gallery"></div>
-            //                 <div class="card-gallery"></div>
-            //             </div>
-            //             <div class="container-card">
-            //                 <div class="card-gallery"></div>
-            //                 <div class="card-gallery"></div>
-            //             </div>
-            //         </div>
-            //     </div>`;
-            // })
-        });
 }
 const queryString = window.location.search;
-console.log(queryString.split("=")[1]);
-refresh(queryString.split("=")[1]);
+// var tag = (decodeURIComponent(queryString.split("=")[1]));
+var tag = (queryString.split(/[\&=]+/));
+
+tag[0] = tag[0].replace('?', '');
+tag[0] = tag[0].replace('l', '')
+console.log(tag)
+refresh(tag);
