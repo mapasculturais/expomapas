@@ -74,8 +74,6 @@ function shuffleArray(arr) {
 
 function refresh(area) {
     var page = parseInt(Math.random() * (250 - 1));
-    var tag = (decodeURIComponent(area[1]));
-
     if (area[0] == "area") {
         $.getJSON(
             'https://mapacultural.secult.ce.gov.br/api/agent/find', {
@@ -98,7 +96,8 @@ function refresh(area) {
                 '@files': '(avatar, gallery):url',
                 '@limit': 10,
                 'term:tag': 'LIKE(%' + nome + '%)',
-                'shortDescription': 'ILIKE(%' + area[3] + '%)'
+                // 'shortDescription': 'ILIKE(%' + area[3] + '%)',
+                'endereco': 'ILIKE(%' + area[3] + '%)'
             },
             function(response) {
                 render(response);
@@ -110,16 +109,7 @@ function refresh(area) {
 
 function render(response) {
     console.log(response);
-    var cont = `<img class="logo" src="./assets/Logo_01.png" alt="">
-            <form action="./home.html">
-            <label for="area">
-            <input type="text" id="area" name="name">
-            <input type="submit" class="submit" value="">
-        </label>
-        <label for="local">
-            <input type="text" id="local" name="local">
-            <input type="submit" class="submit" value="">
-        </label> </form>`;
+    var cont = ``;
     var body = document.querySelector('body');
 
     response.forEach(function(element) {
@@ -161,7 +151,7 @@ function render(response) {
             console.log('não tem');
         }
     })
-    body.innerHTML = cont;
+    body.innerHTML += cont;
     var contCard = document.querySelectorAll('.container-card');
     contCard.forEach(async(card) => {
         var num = Math.floor(Math.random() * (60 - 30)) + 30;
@@ -179,6 +169,16 @@ const queryString = window.location.search;
 var tag = (queryString.split(/[\&=]+/));
 
 tag[0] = tag[0].replace('?', '');
-tag[0] = tag[0].replace('l', '')
-console.log(tag)
-refresh(tag);
+tag[0] = tag[0].replace('l', '');
+tag[3] = tag[3].replace('+', ' ');
+tag[3] = tag[3].replace('+', ' ');
+var tags = [];
+tag.forEach(function(element) {
+    tags.push(decodeURIComponent(element))
+})
+var local = document.querySelector("#local");
+console.log(local);
+var area = document.querySelector("#area");
+area.value = 'arte';
+
+refresh(tags);
